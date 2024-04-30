@@ -14,18 +14,13 @@ def get_class_embeddings_train():
     archive_patterns = [('train_images_{}.tar.gz', 5)]
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(device)
-# Define the path to the model file
     model_path = '../Models/resnet50_imagenet_v2.pth'
-# Load the pretrained ResNet-50 model
     model = models.resnet50()
-# Load the weights from the .pth file
     model.load_state_dict(torch.load(model_path))
-# If you want to use the model for inference, set it to evaluation mode
     model.to(device)
     model.eval()
 
 # Now you can use model to make predictions
-    
     preprocess = transforms.Compose([
         transforms.Resize(224),
         transforms.ToTensor(),

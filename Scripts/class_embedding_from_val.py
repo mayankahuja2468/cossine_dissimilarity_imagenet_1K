@@ -14,26 +14,17 @@ def get_class_embeddings_val():
     archive_pattern = 'val_images.tar.gz'
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(device)
-
-    # Define the path to the model file
     model_path = '../Models/resnet50_imagenet_v2.pth'
-    # Load the pretrained ResNet-50 model
     model = models.resnet50()
-    # Load the weights from the .pth file
     model.load_state_dict(torch.load(model_path, map_location=device))
-    # If you want to use the model for inference, set it to evaluation mode
     model.to(device)
     model.eval()
-
-    # Preprocessing transformations
     preprocess = transforms.Compose([
         transforms.Resize(256),
         transforms.CenterCrop(224),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])    
-
-    # Open the tar file
     file_path = os.path.join(base_path, archive_pattern)          
     with tarfile.open(file_path, 'r:gz') as tar:
         for member in tar.getmembers():
@@ -49,7 +40,5 @@ def get_class_embeddings_val():
                         embedding = model(img_tensor)
                         embedding = embedding.cpu()
                     class_embeddings[label].append(embedding.squeeze().numpy())
-
-    # Average the embeddings for each class
     averaged_class_embeddings = {label: sum(embeds)/len(embeds) for label, embeds in class_embeddings.items()}
     return averaged_class_embeddings
