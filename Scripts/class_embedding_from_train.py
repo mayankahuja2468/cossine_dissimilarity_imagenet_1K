@@ -20,7 +20,6 @@ def get_class_embeddings_train():
     model.to(device)
     model.eval()
 
-# Now you can use model to make predictions
     preprocess = transforms.Compose([
         transforms.Resize(224),
         transforms.ToTensor(),
